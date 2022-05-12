@@ -27,7 +27,7 @@ class AppThemeProvider<T> extends StatelessWidget {
       ),
       child: Builder(
         builder: (context) {
-          return builder(AppTheme.of(context) as AppTheme<T>);
+          return builder(AppTheme.of<T>(context));
         },
       ),
     );

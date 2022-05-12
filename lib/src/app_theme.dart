@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Class holding the theme of the app.
 /// It subscribes to system's theme changes and notifies it's listeners.
@@ -10,8 +10,13 @@ class AppTheme<T> extends ChangeNotifier {
     required T lightThemeData,
   })  : _darkThemeData = darkThemeData,
         _lightThemeData = lightThemeData,
-        _themeMode = _storage.get(ThemeMode, defaultValue: ThemeMode.system) {
+        _themeMode = _initialThemeMode {
     WidgetsBinding.instance.window.onPlatformBrightnessChanged = notifyListeners;
+  }
+
+  /// Call this method before you run [runApp].
+  static Future<void> init() async {
+    _storage = await SharedPreferences.getInstance();
   }
 
   /// True if [themeMode] is set to [ThemeMode.dark] or to [ThemeMode.system] and underlying system is set to dark theme.
@@ -28,7 +33,7 @@ class AppTheme<T> extends ChangeNotifier {
 
   /// Sets the theme mode for the app and notifies listeners.
   Future<void> setThemeMode(ThemeMode mode) async {
-    await _storage.put(ThemeMode, mode);
+    await _storage.setString(_themeModeKey, mode.name);
     _themeMode = mode;
     notifyListeners();
   }
@@ -45,10 +50,16 @@ class AppTheme<T> extends ChangeNotifier {
     return appTheme;
   }
 
-  static final _storage = Hive.box('AppThemeBox');
+  static late final SharedPreferences _storage;
 
   ThemeMode _themeMode;
 
   final T _darkThemeData;
   final T _lightThemeData;
+
+  static ThemeMode get _initialThemeMode {
+    return ThemeMode.values.byName(_storage.getString(_themeModeKey) ?? 'system');
+  }
 }
+
+const String _themeModeKey = 'ThemeMode';
