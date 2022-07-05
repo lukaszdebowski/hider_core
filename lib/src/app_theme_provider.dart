@@ -6,6 +6,8 @@ import 'app_theme.dart';
 typedef AppThemeBuilder<T> = Widget Function(AppTheme<T> theme);
 
 /// Provides [AppTheme] down the tree for access via [AppTheme.of].
+/// 
+/// This should be wrapped around your [MaterialApp] widget.
 class AppThemeProvider<T> extends StatelessWidget {
   const AppThemeProvider({
     Key? key,

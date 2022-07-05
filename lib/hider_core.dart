@@ -5,4 +5,4 @@ export 'src/app_theme.dart' show AppTheme;
 export 'src/failure.dart' show Failure;
 export 'src/result.dart' show Result;
 export 'src/view_binding.dart' show ViewBinding;
-export 'src/view_controller.dart' show ViewController;
+export 'src/view_model.dart' show ViewModel;

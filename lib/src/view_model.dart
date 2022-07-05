@@ -3,8 +3,8 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class ViewController<S> extends ChangeNotifier {
-  ViewController(S initialState) : _states = [initialState];
+class ViewModel<S> extends ChangeNotifier {
+  ViewModel(S initialState) : _states = [initialState];
 
   /// The current state stored in this ViewController.
   ///
@@ -16,6 +16,8 @@ class ViewController<S> extends ChangeNotifier {
   final List<S> _states;
 
   /// Unmodifiable list of all states that were emitted by this ViewController during it's lifecycle.
+  ///
+  /// The latest state is the one at the end of the list.
   ///
   /// If subsequent states are equal as evaluated by the equality operator ==, the later state gets ignored.
   UnmodifiableListView<S> get states => UnmodifiableListView<S>(_states);
@@ -39,5 +41,5 @@ class ViewController<S> extends ChangeNotifier {
   }
 
   @override
-  String toString() => 'ViewController(state: $state, states: $states)';
+  String toString() => 'ViewController(state: $state)';
 }

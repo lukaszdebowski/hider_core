@@ -16,6 +16,7 @@ class AppTheme<T> extends ChangeNotifier {
 
   /// Call this method before you run [runApp].
   static Future<void> init() async {
+    WidgetsFlutterBinding.ensureInitialized();
     _storage = await SharedPreferences.getInstance();
   }
 
