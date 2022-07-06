@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 
 import 'view_model.dart';
 
-typedef ViewBindingViewBuilder<T> = Widget Function(BuildContext, T, Widget?);
+typedef ViewBuilder<T> = Widget Function(BuildContext, T, Widget?);
 
-typedef ViewBindingControllerBuilder<T> = T Function(BuildContext);
+typedef ViewModelBuilder<T> = T Function(BuildContext);
 
-/// Widget that ties view to a [ViewModel].
-class ViewBinding<T extends ViewModel> extends StatelessWidget {
-  const ViewBinding({
+/// Widget that ties a view to a [ViewModel].
+class ViewModelBinding<T extends ViewModel> extends StatelessWidget {
+  const ViewModelBinding({
     Key? key,
     required this.viewBuilder,
     required this.viewModelBuilder,
@@ -18,10 +18,10 @@ class ViewBinding<T extends ViewModel> extends StatelessWidget {
   }) : super(key: key);
 
   /// View builder that will get rebuild when [ViewModel] notifies it's listeners, if [reactive] is set to true.
-  final ViewBindingViewBuilder<T> viewBuilder;
+  final ViewBuilder<T> viewBuilder;
 
   /// Callback that returns the [ViewModel] for the view.
-  final ViewBindingControllerBuilder<T> viewModelBuilder;
+  final ViewModelBuilder<T> viewModelBuilder;
 
   /// If true, the [viewBuilder] will be called when controller notifies it's listeners.
   final bool reactive;

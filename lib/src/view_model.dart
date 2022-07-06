@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class ViewModel<S> extends ChangeNotifier {
+abstract class ViewModel<S> extends ChangeNotifier {
   ViewModel(S initialState) : _states = [initialState];
 
   /// The current state stored in this ViewController.
