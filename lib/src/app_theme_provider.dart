@@ -15,7 +15,10 @@ class AppThemeProvider<T extends Object> extends StatelessWidget {
     required this.builder,
     required this.themeDataModes,
     this.reactsToSystemChanges = true,
-  })  : assert(themeDataModes.containsKey(_lightThemeKey), "themeDataModes has to support at least light mode"),
+  })  : assert(
+          themeDataModes.containsKey(_lightThemeKey),
+          "themeDataModes has to support at least light mode",
+        ),
         super(key: key);
 
   final WidgetBuilderWithTheme<T> builder;
