@@ -6,12 +6,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// It subscribes to system's theme changes and notifies it's listeners.
 class AppTheme<T> extends ChangeNotifier {
   AppTheme({
-    required T darkThemeData,
-    required T lightThemeData,
-  })  : _darkThemeData = darkThemeData,
-        _lightThemeData = lightThemeData,
-        _themeMode = _initialThemeMode {
-    WidgetsBinding.instance.window.onPlatformBrightnessChanged = notifyListeners;
+    required this.themeDataModes,
+    required this.reactsToSystemChanges,
+  }) {
+    _themeDataMode = _initialThemeDataMode;
+    if (reactsToSystemChanges) {
+      WidgetsBinding.instance.window.onPlatformBrightnessChanged = _onPlatformBrightnessChanged;
+    }
   }
 
   /// Call this method before you run [runApp].
@@ -20,47 +21,70 @@ class AppTheme<T> extends ChangeNotifier {
     _storage = await SharedPreferences.getInstance();
   }
 
-  /// True if [themeMode] is set to [ThemeMode.dark] or to [ThemeMode.system] and underlying system is set to dark theme.
-  bool get isDarkTheme =>
-      _themeMode == ThemeMode.dark ||
-      (_themeMode == ThemeMode.system &&
-          WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark);
+  bool get isDarkTheme => _themeDataMode == _darkThemeKey;
 
-  /// Current theme mode used by the app.
-  ThemeMode get themeMode => _themeMode;
+  /// Current theme mode used by the app. This is one of the keys in [themeDataModes].
+  String get themeDataMode => _themeDataMode;
 
-  /// Returns [darkThemeData] or [lightThemeData], based on the value of [isDarkTheme].
-  T get data => isDarkTheme ? _darkThemeData : _lightThemeData;
+  /// True if the app is following the system theme changes.
+  bool get followsSystem => !_storage.containsKey(_themeDataModeKey) && reactsToSystemChanges;
+
+  T get data => themeDataModes[_themeDataMode]!;
 
   /// Sets the theme mode for the app and notifies listeners.
-  Future<void> setThemeMode(ThemeMode mode) async {
-    await _storage.setString(_themeModeKey, mode.name);
-    _themeMode = mode;
+  Future<void> setThemeMode(String mode) async {
+    if (!themeDataModes.containsKey(mode)) {
+      throw Exception('$mode has to be one of supported values: ${themeDataModes.keys}');
+    }
+
+    await _storage.setString(_themeDataModeKey, mode);
+    _themeDataMode = mode;
     notifyListeners();
   }
 
-  /// Allows to read AppTheme without context, but does not subscribe to changes.
-  ///
-  /// Prefer using the [of] method instead, to have the most up to date version of theme.
-  static late AppTheme instance;
+  Future<void> followSystem() async {
+    await _storage.remove(_themeDataModeKey);
+    _themeDataMode = _initialThemeDataMode;
+    notifyListeners();
+  }
+
+  void _onPlatformBrightnessChanged() {
+    final String? storedThemeDataMode = _storage.getString(_themeDataModeKey);
+    if (storedThemeDataMode == null) {
+      followSystem();
+    }
+  }
 
   /// Reads the AppTheme and subscribes to changes, if [listen] is true.
   static AppTheme<T> of<T>(BuildContext context, {bool listen = true}) {
     final appTheme = Provider.of<AppTheme<T>>(context, listen: listen);
-    AppTheme.instance = appTheme;
     return appTheme;
   }
 
   static late final SharedPreferences _storage;
 
-  ThemeMode _themeMode;
+  late String _themeDataMode;
 
-  final T _darkThemeData;
-  final T _lightThemeData;
+  final Map<String, T> themeDataModes;
+  final bool reactsToSystemChanges;
 
-  static ThemeMode get _initialThemeMode {
-    return ThemeMode.values.byName(_storage.getString(_themeModeKey) ?? 'system');
+  String get _initialThemeDataMode {
+    final bool systemSetToDark = WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+    final bool darkThemeModeProvided = themeDataModes.containsKey(_darkThemeKey);
+    final String defaultDataMode = systemSetToDark && darkThemeModeProvided ? _darkThemeKey : _lightThemeKey;
+    try {
+      final String storedThemeDataMode = _storage.getString(_themeDataModeKey) ?? defaultDataMode;
+      if (themeDataModes.containsKey(storedThemeDataMode)) {
+        return storedThemeDataMode;
+      } else {
+        return defaultDataMode;
+      }
+    } catch (_) {
+      return defaultDataMode;
+    }
   }
 }
 
-const String _themeModeKey = 'ThemeMode';
+const String _themeDataModeKey = 'theme_data_mode';
+const String _darkThemeKey = 'dark';
+const String _lightThemeKey = 'light';
