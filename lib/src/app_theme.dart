@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+part of 'app_theme_provider.dart';
 
 /// Class holding the theme of the app.
 /// It subscribes to system's theme changes and notifies it's listeners.

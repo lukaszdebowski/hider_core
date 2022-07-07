@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'app_theme.dart';
+part 'app_theme.dart';
 
 typedef WidgetBuilderWithTheme<T> = Widget Function(AppTheme<T> theme);
 
@@ -9,12 +10,13 @@ typedef WidgetBuilderWithTheme<T> = Widget Function(AppTheme<T> theme);
 ///
 /// This should be wrapped around your [MaterialApp] widget.
 class AppThemeProvider<T extends Object> extends StatelessWidget {
-  const AppThemeProvider({
+  AppThemeProvider({
     Key? key,
     required this.builder,
     required this.themeDataModes,
     this.reactsToSystemChanges = true,
-  }) : super(key: key);
+  })  : assert(themeDataModes.containsKey(_lightThemeKey), "themeDataModes has to support at least light mode"),
+        super(key: key);
 
   final WidgetBuilderWithTheme<T> builder;
 
