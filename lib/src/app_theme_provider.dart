@@ -21,6 +21,7 @@ class AppThemeProvider<T extends Object> extends StatelessWidget {
         ),
         super(key: key);
 
+  /// Widget that will be rebuild on theme changes.
   final WidgetBuilderWithTheme<T> builder;
 
   /// A map of supported theme modes in the app. Should at least contain the key 'light'.
@@ -28,7 +29,7 @@ class AppThemeProvider<T extends Object> extends StatelessWidget {
   /// In case the app should support dark theme, the map should also contain the key 'dark'.
   final Map<String, T> themeDataModes;
 
-  /// Whether the app should be reacting to system's theme changes.
+  /// If true, the class subscribes to system's theme changes.
   final bool reactsToSystemChanges;
 
   @override
