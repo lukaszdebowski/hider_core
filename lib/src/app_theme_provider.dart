@@ -17,7 +17,7 @@ class AppThemeProvider<T extends Object> extends StatelessWidget {
     this.reactsToSystemChanges = true,
   })  : assert(
           themeDataModes.containsKey(_lightThemeKey),
-          "themeDataModes has to support at least light mode",
+          "themeDataModes has to support light mode",
         ),
         super(key: key);
 
