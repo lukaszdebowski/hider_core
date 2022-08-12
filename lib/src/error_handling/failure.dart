@@ -7,15 +7,15 @@ abstract class Failure<T> extends Equatable {
     required this.debugMessage,
     this.exception,
     this.stackTrace,
-    this.value,
+    this.details,
   });
 
   final String code;
   final String debugMessage;
   final Exception? exception;
   final StackTrace? stackTrace;
-  final T? value;
+  final T? details;
 
   @override
-  List<Object?> get props => [debugMessage, exception, stackTrace, value];
+  List<Object?> get props => [debugMessage, exception, stackTrace, details];
 }

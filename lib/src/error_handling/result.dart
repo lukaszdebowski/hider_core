@@ -1,7 +1,7 @@
 import 'failure.dart';
 
 /// Class that represents a call to a resource that can fail.
-/// Typically used to represent an external API call result, or a call to a plugin call like a camera.
+/// Typically used to represent an external API call result, or a call to a plugin like a camera.
 class Result<T> {
   const Result._(this.data, this.failure);
 

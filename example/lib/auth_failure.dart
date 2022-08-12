@@ -7,7 +7,7 @@ class AuthFailure extends Failure {
     required super.debugMessage,
     super.exception,
     super.stackTrace,
-    super.value,
+    super.details,
   });
 
   factory AuthFailure.userNotFound() {
@@ -30,7 +30,7 @@ class AuthFailure extends Failure {
       debugMessage: 'Something unexpected happened here',
       exception: e,
       stackTrace: StackTrace.current,
-      value: failedValue,
+      details: failedValue,
     );
   }
 
