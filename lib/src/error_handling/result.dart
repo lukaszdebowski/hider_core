@@ -10,7 +10,7 @@ class Result<T> {
 
   bool get isSuccessul => failure == null;
 
-  factory Result.success(T data) => Result._(data, null);
+  factory Result.success([T? data]) => Result._(data, null);
 
   factory Result.failure(Failure failure) => Result._(null, failure);
 
