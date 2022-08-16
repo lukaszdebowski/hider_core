@@ -1,39 +1,56 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+This is a sample architecture of a flutter app. 
+The core features that most apps need:
+
+- ViewModel class, which is responsible for presentation logic and delegating user actions to repositories and/or service classes
+- View <> ViewModel bindings, ("bloc" one could say)
+
+
+- Result class - compile time safe way of handling async errors, instead of try catche hell :) 
+- Failure class - base class for every failure/error/exception that might happen in repositories/view models
+
+- Application theme'ing support, with dark/light/custom themes support
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
 
 ```dart
-const like = 'sample';
+
+// Example method in most "outside world facing" layer, i.e service class
+Future<Result<String>> exampleAsyncMethod() async {
+  try {
+    final httpResult = await http.get('...');
+    
+    if (httpResult.status == 200) {
+      return Result.success("All good!");
+    } else {
+      // The result class implicitly expects an instance of Failure on the .failure factory
+      return Result.failure(Failure.exampleAsyncMethodFailed(httpResult.status));
+    }
+  } catch (e) {
+    return Result.failure(Failure.unknownFailure(e));
+  }
+}
+
+// Somewhere in the ViewModel or repository
+Future<void> handleUserTap() async {
+
+  // Get the compile safe async result, no try catches needed
+  final Result<bool> result = await _service.exampleAsyncMethod();
+  
+  // Get the data or the failure, both handlers are mandatory so it's impossible not to handle the "error" case
+  final String message = result.when(
+    (data) => data,
+    (failure) => "something went wrong",
+  );
+  
+  // Do something with the result
+  emitState(message: message);
+}
+
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+This package is a minimal set of functionalities. Additional features may or may not be added.
