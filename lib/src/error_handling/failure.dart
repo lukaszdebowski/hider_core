@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// Extend this class to implement project specific Failures
-abstract class Failure<T> extends Equatable {
+abstract class Failure<Code, Details> extends Equatable {
   const Failure({
     required this.code,
     required this.debugMessage,
@@ -10,11 +10,11 @@ abstract class Failure<T> extends Equatable {
     this.details,
   });
 
-  final String code;
+  final Code code;
   final String debugMessage;
   final Exception? exception;
   final StackTrace? stackTrace;
-  final T? details;
+  final Details? details;
 
   @override
   List<Object?> get props => [debugMessage, exception, stackTrace, details];

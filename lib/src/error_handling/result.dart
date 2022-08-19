@@ -9,12 +9,16 @@ class Result<T> {
   final Failure? failure;
 
   bool get isSuccessul => failure == null;
+  bool get isFailed => !isSuccessul;
 
   factory Result.success([T? data]) => Result._(data, null);
 
   factory Result.failure(Failure failure) => Result._(null, failure);
 
-  S when<S>({required S Function(T data) success, required S Function(Failure failure) failure}) {
+  S when<S>({
+    required S Function(T data) success,
+    required S Function(Failure failure) failure,
+  }) {
     if (isSuccessul) {
       return success(data as T);
     } else {
