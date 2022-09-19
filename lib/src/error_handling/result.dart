@@ -8,8 +8,8 @@ class Result<T> {
   final T? data;
   final Failure? failure;
 
-  bool get isSuccessul => failure == null;
-  bool get isFailed => !isSuccessul;
+  bool get isSuccessful => failure == null;
+  bool get isFailed => !isSuccessful;
 
   factory Result.success([T? data]) => Result._(data, null);
 
@@ -19,7 +19,7 @@ class Result<T> {
     required S Function(T data) success,
     required S Function(Failure failure) failure,
   }) {
-    if (isSuccessul) {
+    if (isSuccessful) {
       return success(data as T);
     } else {
       return failure(this.failure!);
