@@ -2,18 +2,18 @@ import 'failure.dart';
 
 /// Class that represents a call to a resource that can fail.
 /// Typically used to represent an external API call result, or a call to a plugin like a camera.
-class Result<T> {
+class Result<T, F extends Failure> {
   const Result._(this.data, this.failure);
 
   final T? data;
-  final Failure? failure;
+  final F? failure;
 
   bool get isSuccessful => failure == null;
   bool get isFailed => !isSuccessful;
 
   factory Result.success([T? data]) => Result._(data, null);
 
-  factory Result.failure(Failure failure) => Result._(null, failure);
+  factory Result.failure(F failure) => Result._(null, failure);
 
   S when<S>({
     required S Function(T data) success,
