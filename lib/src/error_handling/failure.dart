@@ -1,21 +1,17 @@
 import 'package:equatable/equatable.dart';
 
-/// Extend this class to implement project specific Failures
-abstract class Failure<Code, Details> extends Equatable {
-  const Failure({
-    required this.code,
-    required this.debugMessage,
-    this.exception,
-    this.stackTrace,
-    this.details,
-  });
-
-  final Code code;
-  final String debugMessage;
-  final Exception? exception;
+/// Provides details of the failure.
+class Failure<E> extends Equatable {
+  final String message;
+  final E exception;
   final StackTrace? stackTrace;
-  final Details? details;
+
+  const Failure(
+    this.message,
+    this.exception, [
+    this.stackTrace,
+  ]);
 
   @override
-  List<Object?> get props => [debugMessage, exception, stackTrace, details];
+  List<Object?> get props => [message, exception, stackTrace];
 }
